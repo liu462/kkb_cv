@@ -20,7 +20,7 @@ public:
 	virtual ~Augmentator();
 
 	int Crop(cv::Mat& src, cv::Mat& dst, cv::Rect win_rect, cv::Size target_size = cv::Size());
-	int ColorShift();
+	int ColorShift(cv::Mat& src, cv::Mat & dst, int range);
 	int Rotation();
 	int PerspectiveTransform();
 	int NoiseAdd();

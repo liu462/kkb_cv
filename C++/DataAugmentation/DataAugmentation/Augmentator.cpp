@@ -48,3 +48,46 @@ int Augmentator::Crop(cv::Mat & src, cv::Mat & dst, cv::Rect win_rect, cv::Size 
 	
 	return 0;
 }
+
+int Augmentator::ColorShift(cv::Mat& src, cv::Mat & dst, int range)
+{
+	if (src.empty()) return -1;
+	if (range < 0 || range >255) return -1;
+
+	cv::Mat color_mod_img = src.clone();
+
+	std::vector<cv::Mat> color_mod_channels;
+	cv::split(color_mod_img, color_mod_channels);
+
+	cv::RNG rng(0xFFFFFFFF);
+	
+	if (0 == range) dst = color_mod_img;
+
+	std::vector<int> rng_vals;
+	for (int i = 0; i < 3; i++) 
+	{
+		rng_vals.push_back(rng.uniform(-1 * range, range));
+	}
+
+	
+	for (cv::Mat& cur_channel : color_mod_channels) 
+	{
+		for (int i = 0; i < cur_channel.rows; i++)
+		{
+			for (int j = 0; j < cur_channel.cols; j++)
+			{
+				int cur_val = (int)cur_channel.at<uchar>(i, j);
+				cur_val += rng_vals[i];
+
+				if (cur_val < 0) cur_val = 0;
+				else if (cur_val > 255) cur_val = 255;
+				cur_channel.at<uchar>(i, j) = cur_val;
+			}
+		}
+		
+	}
+
+	cv::merge(color_mod_channels, dst);
+
+	return 0;
+}
