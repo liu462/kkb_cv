@@ -91,3 +91,15 @@ int Augmentator::ColorShift(cv::Mat& src, cv::Mat & dst, int range)
 
 	return 0;
 }
+
+int Augmentator::SimilarityTransform(cv::Mat & src, cv::Mat & dst, cv::Point2f center, double angle, double scale)
+{
+	if (src.empty()) return -1;
+	if (center.x<0 || center.x>src.cols - 1) return -1;
+	if (center.y<0 || center.y>src.rows - 1) return -1;
+
+	cv::Mat simiM = cv::getRotationMatrix2D(center, angle, scale);
+	cv::warpAffine(src, dst, simiM, cv::Size(src.cols, src.rows));
+	
+	return 0;
+}
