@@ -164,3 +164,15 @@ int Augmentator::PerspectiveTransform(cv::Mat & src, cv::Mat & dst)
 
 	return 0;
 }
+
+int Augmentator::NoiseAdd(cv::Mat & src, cv::Mat & dst)
+{
+	if (src.empty()) return -1;
+
+	cv::RNG rng(0xFFFFFFFF);
+	cv::Mat noise(src.size(), src.type());
+	rng.fill(noise, cv::RNG::NORMAL, 10, 36);
+	cv::add(src, noise, dst);
+
+	return 0;
+}
