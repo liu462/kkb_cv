@@ -19,7 +19,7 @@ public:
 	Augmentator();
 	virtual ~Augmentator();
 
-	int Crop(cv::Mat& src, cv::Mat& dst, cv::Size win_size, cv::Size target_win_size, int crop_mode);
+	int Crop(cv::Mat& src, cv::Mat& dst, cv::Rect win_rect, cv::Size target_size = cv::Size());
 	int ColorShift();
 	int Rotation();
 	int PerspectiveTransform();
