@@ -22,8 +22,8 @@ public:
 	int Crop(cv::Mat& src, cv::Mat& dst, cv::Rect win_rect, cv::Size target_size = cv::Size());
 	int ColorShift(cv::Mat& src, cv::Mat & dst, int range);
 	int SimilarityTransform(cv::Mat& src, cv::Mat & dst, cv::Point2f center, double angle, double scale);
-	int AffineTransform(cv::Mat& src, cv::Mat & dst, int range);
-	int PerspectiveTransform();
+	int AffineTransform(cv::Mat& src, cv::Mat & dst);
+	int PerspectiveTransform(cv::Mat& src, cv::Mat & dst);
 	int NoiseAdd();
 
 

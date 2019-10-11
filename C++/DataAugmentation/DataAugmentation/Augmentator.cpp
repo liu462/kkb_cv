@@ -98,8 +98,69 @@ int Augmentator::SimilarityTransform(cv::Mat & src, cv::Mat & dst, cv::Point2f c
 	if (center.x<0 || center.x>src.cols - 1) return -1;
 	if (center.y<0 || center.y>src.rows - 1) return -1;
 
-	cv::Mat simiM = cv::getRotationMatrix2D(center, angle, scale);
-	cv::warpAffine(src, dst, simiM, cv::Size(src.cols, src.rows));
+	cv::Mat simi_mat = cv::getRotationMatrix2D(center, angle, scale);
+	cv::warpAffine(src, dst, simi_mat, cv::Size(src.cols, src.rows));
 	
+	return 0;
+}
+
+int Augmentator::AffineTransform(cv::Mat & src, cv::Mat & dst)
+{
+	if (src.empty()) return -1;
+
+	std::vector<cv::Point> src_pts, dst_pts;
+	src_pts.push_back(cv::Point(0, 0));
+	src_pts.push_back(cv::Point(src.cols - 1, 0));
+	src_pts.push_back(cv::Point(0, src.rows - 1));
+
+	dst_pts.push_back(cv::Point(src.cols * 0.2, src.rows * 0.1));
+	dst_pts.push_back(cv::Point(src.cols * 0.9, src.rows * 0.2));
+	dst_pts.push_back(cv::Point(src.cols * 0.1, src.rows * 0.9));
+
+	cv::Mat affine_mat = cv::getAffineTransform(src_pts, dst_pts);
+	cv::warpAffine(src, dst, affine_mat, cv::Size(src.cols, src.rows));
+
+	return 0;
+}
+
+int Augmentator::PerspectiveTransform(cv::Mat & src, cv::Mat & dst)
+{
+	if (src.empty()) return -1;
+	
+	int random_margin = 60;
+
+	cv::RNG rng(0xFFFFFFFF);
+	std::vector<cv::Point> src_pts, dst_pts;
+	
+	int x1 = rng.uniform(-random_margin, random_margin);
+	int y1 = rng.uniform(-random_margin, random_margin);
+	src_pts.push_back(cv::Point(x1, y1));
+	int x2 = rng.uniform(src.cols - random_margin - 1, src.cols - 1);
+	int y2 = rng.uniform(-random_margin, random_margin);
+	src_pts.push_back(cv::Point(x2, y2));
+	int x3 = rng.uniform(src.cols - random_margin - 1, src.cols - 1);
+	int y3 = rng.uniform(src.rows - random_margin - 1, src.rows - 1);
+	src_pts.push_back(cv::Point(x3, y3));
+	int x4 = rng.uniform(-random_margin, random_margin);
+	int y4 = rng.uniform(src.rows - random_margin - 1, src.rows - 1);
+	src_pts.push_back(cv::Point(x4, y4));
+
+
+	int dx1 = rng.uniform(-random_margin, random_margin);
+	int dy1 = rng.uniform(-random_margin, random_margin);
+	dst_pts.push_back(cv::Point(dx1, dy1));
+	int dx2 = rng.uniform(src.cols - random_margin - 1, src.cols - 1);
+	int dy2 = rng.uniform(-random_margin, random_margin);
+	dst_pts.push_back(cv::Point(dx2, dy2));
+	int dx3 = rng.uniform(src.cols - random_margin - 1, src.cols - 1);
+	int dy3 = rng.uniform(src.rows - random_margin - 1, src.rows - 1);
+	dst_pts.push_back(cv::Point(dx3, dy3));
+	int dx4 = rng.uniform(-random_margin, random_margin);
+	int dy4 = rng.uniform(src.rows - random_margin - 1, src.rows - 1);
+	dst_pts.push_back(cv::Point(dx4, dy4));
+
+	cv::Mat perspective_mat = cv::getPerspectiveTransform(src_pts, dst_pts);
+	cv::warpPerspective(src, dst, perspective_mat, cv::Size(src.cols, src.rows));
+
 	return 0;
 }
